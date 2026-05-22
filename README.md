@@ -1,16 +1,17 @@
 # Single Cycle RISC-V CPU
 
-A single-cycle RISC-V CPU built in SystemVerilog and verified using ModelSim.
+A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelSim.
 
 ## Current Progress
 
 - [x] ALU
 - [x] Register File
-- [ ] Immediate Generator
+- [x] Immediate Generator
 - [ ] Control Unit
 - [ ] Program Counter
 - [ ] Instruction Memory
 - [ ] Data Memory
+- [ ] Datapath
 - [ ] Top-Level CPU Integration
 
 ---
@@ -67,3 +68,40 @@ A single-cycle RISC-V CPU built in SystemVerilog and verified using ModelSim.
 ### Waveform
 
 ![Register File Waveform](docs/reg_file_waveform.png)
+
+---
+
+# Immediate Generator
+
+## Features
+
+- I-type immediate extraction
+- Load immediate extraction
+- Store immediate extraction
+- Branch immediate extraction
+- Sign extension to 32 bits
+
+## Files
+
+- `src/imm_gen.sv`
+- `tb/imm_gen_tb.sv`
+
+## Simulation Results
+
+### Transcript
+
+![Immediate Generator Transcript](docs/imm_gen_pass_transcript.png)
+
+### Waveform
+
+![Immediate Generator Waveform](docs/imm_gen_waveform.png)
+
+---
+
+## Tools Used
+
+- SystemVerilog
+- ModelSim Intel FPGA Edition
+- Git
+- GitHub
+- VS Code
