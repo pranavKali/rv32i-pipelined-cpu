@@ -1,50 +1,69 @@
-# Single-Cycle RISC-V CPU
+# Single Cycle RISC-V CPU
 
-Single-cycle RISC-V CPU implemented in SystemVerilog.
-
----
+A single-cycle RISC-V CPU built in SystemVerilog and verified using ModelSim.
 
 ## Current Progress
 
-- [x] 32-bit ALU
-- [ ] Register File
+- [x] ALU
+- [x] Register File
 - [ ] Immediate Generator
 - [ ] Control Unit
-- [ ] Datapath
-- [ ] Top-Level CPU
+- [ ] Program Counter
+- [ ] Instruction Memory
+- [ ] Data Memory
+- [ ] Top-Level CPU Integration
 
 ---
 
-## ALU
+# ALU
 
-Implemented a 32-bit ALU supporting:
+## Features
 
 - ADD
 - SUB
 - AND
 - OR
 - XOR
-- SLL
-- SRL
+- Shift Left Logical (SLL)
+- Shift Right Logical (SRL)
 
-The ALU was verified using a self-checking SystemVerilog testbench in ModelSim.
+## Files
 
----
+- `src/alu.sv`
+- `tb/alu_tb.sv`
 
 ## Simulation Results
 
-Simulation screenshots and waveform captures are located in the `docs/` directory.
+### Transcript
 
-Files included:
-- `alu_waveform.png`
-- `alu_pass_transcript.png`
+![ALU Transcript](docs/alu_pass_transcript.png)
+
+### Waveform
+
+![ALU Waveform](docs/alu_waveform.png)
 
 ---
 
-## Tools Used
+# Register File
 
-- SystemVerilog
-- ModelSim Intel FPGA Edition
-- Git
-- GitHub
-- VS Code
+## Features
+
+- 32 general-purpose registers
+- Dual read ports
+- Single write port
+- Register x0 hardwired to zero
+
+## Files
+
+- `src/reg_file.sv`
+- `tb/reg_file_tb.sv`
+
+## Simulation Results
+
+### Transcript
+
+![Register File Transcript](docs/reg_file_pass_transcript.png)
+
+### Waveform
+
+![Register File Waveform](docs/reg_file_waveform.png)
