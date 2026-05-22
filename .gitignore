@@ -5,3 +5,5 @@ transcript
 *.log
 *.bak
 .vscode/
+*.mpf
+*.mti
