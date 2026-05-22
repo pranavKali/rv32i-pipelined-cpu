@@ -1,0 +1,7 @@
+work/
+transcript
+*.wlf
+*.vcd
+*.log
+*.bak
+.vscode/
