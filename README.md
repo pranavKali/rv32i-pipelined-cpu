@@ -7,7 +7,8 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 - [x] ALU
 - [x] Register File
 - [x] Immediate Generator
-- [ ] Control Unit
+- [x] Control Unit
+- [ ] ALU Control
 - [ ] Program Counter
 - [ ] Instruction Memory
 - [ ] Data Memory
@@ -95,6 +96,34 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ### Waveform
 
 ![Immediate Generator Waveform](docs/imm_gen_waveform.png)
+
+---
+
+# Control Unit
+
+## Features
+
+- R-type instruction decoding
+- I-type instruction decoding
+- Load instruction decoding
+- Store instruction decoding
+- Branch instruction decoding
+- Generates datapath control signals
+
+## Files
+
+- `src/control_unit.sv`
+- `tb/control_unit_tb.sv`
+
+## Simulation Results
+
+### Transcript
+
+![Control Unit Transcript](docs/control_unit_pass_transcript.png)
+
+### Waveform
+
+![Control Unit Waveform](docs/control_unit_waveform.png)
 
 ---
 
