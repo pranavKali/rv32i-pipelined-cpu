@@ -8,7 +8,7 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 - [x] Register File
 - [x] Immediate Generator
 - [x] Control Unit
-- [ ] ALU Control
+- [x] ALU Control
 - [ ] Program Counter
 - [ ] Instruction Memory
 - [ ] Data Memory
@@ -124,6 +124,47 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ### Waveform
 
 ![Control Unit Waveform](docs/control_unit_waveform.png)
+
+---
+
+# ALU Control
+
+## Features
+
+- Decodes ALU operations using:
+  - `alu_op`
+  - `funct3`
+  - `funct7`
+
+- Supports:
+  - ADD
+  - SUB
+  - AND
+  - OR
+  - XOR
+  - SLL
+  - SRL
+  - ADDI
+  - ANDI
+  - ORI
+  - XORI
+  - SLLI
+  - SRLI
+
+## Files
+
+- `src/alu_control.sv`
+- `tb/alu_control_tb.sv`
+
+## Simulation Results
+
+### Transcript
+
+![ALU Control Transcript](docs/alu_control_pass_transcript.png)
+
+### Waveform
+
+![ALU Control Waveform](docs/alu_control_waveform.png)
 
 ---
 
