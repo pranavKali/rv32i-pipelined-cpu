@@ -13,25 +13,28 @@ module cpu_top_tb;
     always #5 clk = ~clk;
 
     initial begin
+
         clk = 0;
         rst_n = 0;
 
         #10;
         rst_n = 1;
 
-        #1;
-        $display("Instruction 1: %h", instruction);
+        repeat(10) begin
+            #10;
+            $display("Instruction: %h", instruction);
+        end
 
-        #10;
-        $display("Instruction 2: %h", instruction);
+        $display("x1 = %0d", dut.datapath_inst.regfile_inst.regs[1]);
+        $display("x2 = %0d", dut.datapath_inst.regfile_inst.regs[2]);
+        $display("x3 = %0d", dut.datapath_inst.regfile_inst.regs[3]);
+        $display("x4 = %0d", dut.datapath_inst.regfile_inst.regs[4]);
 
-        #10;
-        $display("Instruction 3: %h", instruction);
-
-        #10;
-        $display("Instruction 4: %h", instruction);
+        $display("Memory[0] = %0d",
+            dut.datapath_inst.dmem_inst.memory[0]);
 
         $finish;
+
     end
 
 endmodule
