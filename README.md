@@ -10,7 +10,7 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 - [x] Control Unit
 - [x] ALU Control
 - [x] Program Counter
-- [ ] Instruction Memory
+- [x] Instruction Memory
 - [ ] Data Memory
 - [ ] Datapath
 - [ ] Top-Level CPU Integration
@@ -190,6 +190,32 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ### Waveform
 
 ![Program Counter Waveform](docs/program_counter_waveform.png)
+
+---
+
+# Instruction Memory
+
+## Features
+
+- 256-word instruction memory
+- Stores 32-bit RISC-V instructions
+- Uses word-aligned addressing
+- Supports instruction fetch operations
+
+## Files
+
+- `src/instruction_memory.sv`
+- `tb/instruction_memory_tb.sv`
+
+## Simulation Results
+
+### Transcript
+
+![Instruction Memory Transcript](docs/instruction_memory_pass_transcript.png)
+
+### Waveform
+
+![Instruction Memory Waveform](docs/instruction_memory_waveform.png)
 
 ---
 
