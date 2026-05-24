@@ -12,8 +12,8 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 - [x] Program Counter
 - [x] Instruction Memory
 - [x] Data Memory
-- [ ] Datapath
-- [ ] Top-Level CPU Integration
+- [x] Datapath
+- [x] Top-Level CPU Integration
 
 ---
 
@@ -227,6 +227,31 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 
 ### Waveform
 ![Data Memory Waveform](docs/data_memory_waveform.png)
+
+---
+
+# CPU Top-Level Integration
+
+## Features
+
+- Connects Control Unit, ALU Control, and Datapath
+- Executes instruction fetch sequence
+- Supports PC updates
+- Supports instruction decoding
+- Supports memory access and writeback
+
+## Files
+
+- `src/cpu_top.sv`
+- `tb/cpu_top_tb.sv`
+
+## Simulation Results
+
+### Transcript
+![CPU Top Transcript](docs/cpu_top_pass_transcript.png)
+
+### Waveform
+![CPU Top Waveform](docs/cpu_top_waveform.png)
 
 ---
 
