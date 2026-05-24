@@ -20,12 +20,25 @@ module datapath (
     logic [31:0] rd1, rd2, imm;
     logic [31:0] alu_in2, alu_result;
     logic [31:0] mem_read_data, write_back_data;
+    logic [31:0] branch_target;
 
     assign pc_plus_4 = pc + 32'd4;
-    assign pc_next = pc_plus_4;
+    assign branch_target = pc + imm;
 
-    assign alu_in2 = (alu_src) ? imm : rd2;
-    assign write_back_data = (mem_to_reg) ? mem_read_data : alu_result;
+    assign pc_next =
+        (branch && zero) ?
+        branch_target :
+        pc_plus_4;
+
+    assign alu_in2 =
+        (alu_src) ?
+        imm :
+        rd2;
+
+    assign write_back_data =
+        (mem_to_reg) ?
+        mem_read_data :
+        alu_result;
 
     program_counter pc_inst (
         .clk(clk),
