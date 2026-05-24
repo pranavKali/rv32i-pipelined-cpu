@@ -11,7 +11,7 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 - [x] ALU Control
 - [x] Program Counter
 - [x] Instruction Memory
-- [ ] Data Memory
+- [x] Data Memory
 - [ ] Datapath
 - [ ] Top-Level CPU Integration
 
@@ -37,11 +37,9 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Simulation Results
 
 ### Transcript
-
 ![ALU Transcript](docs/alu_pass_transcript.png)
 
 ### Waveform
-
 ![ALU Waveform](docs/alu_waveform.png)
 
 ---
@@ -63,11 +61,9 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Simulation Results
 
 ### Transcript
-
 ![Register File Transcript](docs/reg_file_pass_transcript.png)
 
 ### Waveform
-
 ![Register File Waveform](docs/reg_file_waveform.png)
 
 ---
@@ -90,11 +86,9 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Simulation Results
 
 ### Transcript
-
 ![Immediate Generator Transcript](docs/imm_gen_pass_transcript.png)
 
 ### Waveform
-
 ![Immediate Generator Waveform](docs/imm_gen_waveform.png)
 
 ---
@@ -118,11 +112,9 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Simulation Results
 
 ### Transcript
-
 ![Control Unit Transcript](docs/control_unit_pass_transcript.png)
 
 ### Waveform
-
 ![Control Unit Waveform](docs/control_unit_waveform.png)
 
 ---
@@ -159,11 +151,9 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Simulation Results
 
 ### Transcript
-
 ![ALU Control Transcript](docs/alu_control_pass_transcript.png)
 
 ### Waveform
-
 ![ALU Control Waveform](docs/alu_control_waveform.png)
 
 ---
@@ -184,11 +174,9 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Simulation Results
 
 ### Transcript
-
 ![Program Counter Transcript](docs/program_counter_pass_transcript.png)
 
 ### Waveform
-
 ![Program Counter Waveform](docs/program_counter_waveform.png)
 
 ---
@@ -210,12 +198,35 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Simulation Results
 
 ### Transcript
-
 ![Instruction Memory Transcript](docs/instruction_memory_pass_transcript.png)
 
 ### Waveform
-
 ![Instruction Memory Waveform](docs/instruction_memory_waveform.png)
+
+---
+
+# Data Memory
+
+## Features
+
+- 256-word data memory
+- Stores 32-bit data values
+- Synchronous writes
+- Combinational reads
+- Word-aligned addressing
+
+## Files
+
+- `src/data_memory.sv`
+- `tb/data_memory_tb.sv`
+
+## Simulation Results
+
+### Transcript
+![Data Memory Transcript](docs/data_memory_pass_transcript.png)
+
+### Waveform
+![Data Memory Waveform](docs/data_memory_waveform.png)
 
 ---
 
