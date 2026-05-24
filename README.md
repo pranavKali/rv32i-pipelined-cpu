@@ -1,6 +1,6 @@
 # Single Cycle RISC-V CPU
 
-A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelSim.
+A modular single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelSim.
 
 ## Current Progress
 
@@ -12,8 +12,33 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 - [x] Program Counter
 - [x] Instruction Memory
 - [x] Data Memory
-- [x] Datapath
-- [x] Top-Level CPU Integration
+- [x] Datapath Integration
+- [x] CPU Top-Level Integration
+- [x] End-to-End Program Execution Test
+- [ ] Pipelined CPU
+- [ ] FPGA Implementation
+
+---
+
+# Project Architecture
+
+```text
+Program Counter
+      ↓
+Instruction Memory
+      ↓
+Control Unit
+      ↓
+Register File
+      ↓
+Immediate Generator
+      ↓
+ALU
+      ↓
+Data Memory
+      ↓
+Writeback
+```
 
 ---
 
@@ -163,8 +188,8 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Features
 
 - 32-bit program counter
-- Updates on positive clock edge
-- Asynchronous reset to zero
+- Positive-edge clock update
+- Asynchronous reset
 
 ## Files
 
@@ -185,10 +210,10 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 
 ## Features
 
-- 256-word instruction memory
-- Stores 32-bit RISC-V instructions
-- Uses word-aligned addressing
-- Supports instruction fetch operations
+- 256-word memory
+- Stores RISC-V instructions
+- Word-aligned addressing
+- Supports instruction fetch
 
 ## Files
 
@@ -209,10 +234,9 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 
 ## Features
 
-- 256-word data memory
-- Stores 32-bit data values
-- Synchronous writes
-- Combinational reads
+- 256-word memory
+- Synchronous write
+- Combinational read
 - Word-aligned addressing
 
 ## Files
@@ -236,9 +260,10 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 
 - Connects Control Unit, ALU Control, and Datapath
 - Executes instruction fetch sequence
-- Supports PC updates
-- Supports instruction decoding
-- Supports memory access and writeback
+- Supports instruction decode
+- Supports ALU execution
+- Supports memory access
+- Supports writeback
 
 ## Files
 
@@ -248,10 +273,10 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ## Simulation Results
 
 ### Transcript
-![CPU Top Transcript](docs/cpu_top_pass_transcript.png)
+![CPU Transcript](docs/cpu_top_pass_transcript.png)
 
 ### Waveform
-![CPU Top Waveform](docs/cpu_top_waveform.png)
+![CPU Waveform](docs/cpu_top_waveform.png)
 
 ---
 
