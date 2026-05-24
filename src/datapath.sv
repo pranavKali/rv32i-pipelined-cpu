@@ -3,7 +3,6 @@ module datapath (
     input logic clk,
     input logic rst_n,
 
-    // Control signals
     input logic reg_write,
     input logic alu_src,
     input logic mem_read,
@@ -17,7 +16,6 @@ module datapath (
 
 );
 
-    // Internal signals
     logic [31:0] pc;
     logic [31:0] pc_next;
     logic [31:0] pc_plus_4;
@@ -32,22 +30,36 @@ module datapath (
     logic [31:0] mem_read_data;
     logic [31:0] write_back_data;
 
-    // PC + 4
     assign pc_plus_4 = pc + 32'd4;
-
-    // For now, always go to next instruction
     assign pc_next = pc_plus_4;
 
-    program_counter pc_inst (
+    program_counter pc_inst(
         .clk(clk),
         .rst_n(rst_n),
         .pc_next(pc_next),
         .pc(pc)
     );
 
-    instruction_memory imem_inst (
+    instruction_memory imem_inst(
         .address(pc),
         .instruction(instruction)
+    );
+
+    reg_file regfile_inst(
+        .clk(clk),
+        .rst_n(rst_n),
+        .rs1(instruction[19:15]),
+        .rs2(instruction[24:20]),
+        .rd(instruction[11:7]),
+        .wd(write_back_data),
+        .reg_write(reg_write),
+        .rd1(rd1),
+        .rd2(rd2)
+    );
+
+    imm_gen imm_inst(
+        .instr(instruction),
+        .imm(imm)
     );
 
 endmodule
