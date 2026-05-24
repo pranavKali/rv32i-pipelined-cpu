@@ -6,6 +6,7 @@ module control_unit (
     output logic alu_src,
     output logic mem_read,
     output logic mem_write,
+    output logic mem_to_reg,
     output logic branch,
     output logic [1:0] alu_op
 
@@ -13,12 +14,13 @@ module control_unit (
 
 always_comb begin
 
-    reg_write = 0;
-    alu_src   = 0;
-    mem_read  = 0;
-    mem_write = 0;
-    branch    = 0;
-    alu_op    = 2'b00;
+    reg_write  = 0;
+    alu_src    = 0;
+    mem_read   = 0;
+    mem_write  = 0;
+    mem_to_reg = 0;
+    branch     = 0;
+    alu_op     = 2'b00;
 
     case(opcode)
 
@@ -37,6 +39,7 @@ always_comb begin
             reg_write = 1;
             alu_src = 1;
             mem_read = 1;
+            mem_to_reg = 1;
         end
 
         7'b0100011: begin // Store
