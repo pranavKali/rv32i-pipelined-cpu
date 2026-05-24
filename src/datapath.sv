@@ -64,4 +64,13 @@ module datapath (
         .zero(zero)
     );
 
+    data_memory dmem_inst (
+        .clk(clk),
+        .mem_write(mem_write),
+        .mem_read(mem_read),
+        .address(alu_result),
+        .write_data(rd2),
+        .read_data(mem_read_data)
+    );
+
 endmodule
