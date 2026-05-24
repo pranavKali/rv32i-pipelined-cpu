@@ -32,4 +32,22 @@ module datapath (
     logic [31:0] mem_read_data;
     logic [31:0] write_back_data;
 
+    // PC + 4
+    assign pc_plus_4 = pc + 32'd4;
+
+    // For now, always go to next instruction
+    assign pc_next = pc_plus_4;
+
+    program_counter pc_inst (
+        .clk(clk),
+        .rst_n(rst_n),
+        .pc_next(pc_next),
+        .pc(pc)
+    );
+
+    instruction_memory imem_inst (
+        .address(pc),
+        .instruction(instruction)
+    );
+
 endmodule
