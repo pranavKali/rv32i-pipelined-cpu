@@ -9,7 +9,7 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 - [x] Immediate Generator
 - [x] Control Unit
 - [x] ALU Control
-- [ ] Program Counter
+- [x] Program Counter
 - [ ] Instruction Memory
 - [ ] Data Memory
 - [ ] Datapath
@@ -165,6 +165,31 @@ A single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelS
 ### Waveform
 
 ![ALU Control Waveform](docs/alu_control_waveform.png)
+
+---
+
+# Program Counter
+
+## Features
+
+- 32-bit program counter
+- Updates on positive clock edge
+- Asynchronous reset to zero
+
+## Files
+
+- `src/program_counter.sv`
+- `tb/program_counter_tb.sv`
+
+## Simulation Results
+
+### Transcript
+
+![Program Counter Transcript](docs/program_counter_pass_transcript.png)
+
+### Waveform
+
+![Program Counter Waveform](docs/program_counter_waveform.png)
 
 ---
 
