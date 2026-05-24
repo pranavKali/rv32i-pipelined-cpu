@@ -16,36 +16,30 @@ module datapath (
 
 );
 
-    logic [31:0] pc;
-    logic [31:0] pc_next;
-    logic [31:0] pc_plus_4;
-
-    logic [31:0] rd1;
-    logic [31:0] rd2;
-    logic [31:0] imm;
-
-    logic [31:0] alu_in2;
-    logic [31:0] alu_result;
-
-    logic [31:0] mem_read_data;
-    logic [31:0] write_back_data;
+    logic [31:0] pc, pc_next, pc_plus_4;
+    logic [31:0] rd1, rd2, imm;
+    logic [31:0] alu_in2, alu_result;
+    logic [31:0] mem_read_data, write_back_data;
 
     assign pc_plus_4 = pc + 32'd4;
     assign pc_next = pc_plus_4;
 
-    program_counter pc_inst(
+    assign alu_in2 = (alu_src) ? imm : rd2;
+    assign write_back_data = (mem_to_reg) ? mem_read_data : alu_result;
+
+    program_counter pc_inst (
         .clk(clk),
         .rst_n(rst_n),
         .pc_next(pc_next),
         .pc(pc)
     );
 
-    instruction_memory imem_inst(
+    instruction_memory imem_inst (
         .address(pc),
         .instruction(instruction)
     );
 
-    reg_file regfile_inst(
+    reg_file regfile_inst (
         .clk(clk),
         .rst_n(rst_n),
         .rs1(instruction[19:15]),
@@ -57,9 +51,17 @@ module datapath (
         .rd2(rd2)
     );
 
-    imm_gen imm_inst(
+    imm_gen imm_inst (
         .instr(instruction),
         .imm(imm)
+    );
+
+    alu alu_inst (
+        .a(rd1),
+        .b(alu_in2),
+        .alu_sel(alu_sel),
+        .result(alu_result),
+        .zero(zero)
     );
 
 endmodule
