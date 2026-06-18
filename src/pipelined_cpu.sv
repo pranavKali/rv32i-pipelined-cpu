@@ -46,6 +46,8 @@ module pipelined_cpu (
     logic [4:0] rs1;
     logic [4:0] rs2;
     logic [4:0] rd;
+    logic [2:0] funct3;
+    logic funct7_5;
 
     logic [31:0] rs1_data;
     logic [31:0] rs2_data;
@@ -59,10 +61,12 @@ module pipelined_cpu (
     logic branch;
     logic [1:0] alu_op;
 
-    assign opcode = if_id_instruction[6:0];
-    assign rd     = if_id_instruction[11:7];
-    assign rs1    = if_id_instruction[19:15];
-    assign rs2    = if_id_instruction[24:20];
+    assign opcode   = if_id_instruction[6:0];
+    assign rd       = if_id_instruction[11:7];
+    assign funct3   = if_id_instruction[14:12];
+    assign rs1      = if_id_instruction[19:15];
+    assign rs2      = if_id_instruction[24:20];
+    assign funct7_5 = if_id_instruction[30];
 
     control_unit control_inst (
         .opcode(opcode),
@@ -80,14 +84,12 @@ module pipelined_cpu (
         .imm(imm)
     );
 
-    // Temporary writeback wires.
+    // =========================
+    // WB Stage wires
+    // =========================
     logic [31:0] wb_data;
     logic [4:0] wb_rd;
     logic wb_reg_write;
-
-    assign wb_data = 32'b0;
-    assign wb_rd = 5'b0;
-    assign wb_reg_write = 1'b0;
 
     reg_file reg_file_inst (
         .clk(clk),
@@ -116,6 +118,9 @@ module pipelined_cpu (
     logic [4:0] id_ex_rs2;
     logic [4:0] id_ex_rd;
 
+    logic [2:0] id_ex_funct3;
+    logic id_ex_funct7_5;
+
     logic id_ex_reg_write;
     logic id_ex_mem_read;
     logic id_ex_mem_write;
@@ -137,6 +142,9 @@ module pipelined_cpu (
         .rs2_in(rs2),
         .rd_in(rd),
 
+        .funct3_in(funct3),
+        .funct7_5_in(funct7_5),
+
         .reg_write_in(reg_write),
         .mem_read_in(mem_read),
         .mem_write_in(mem_write),
@@ -153,6 +161,9 @@ module pipelined_cpu (
         .rs1_out(id_ex_rs1),
         .rs2_out(id_ex_rs2),
         .rd_out(id_ex_rd),
+
+        .funct3_out(id_ex_funct3),
+        .funct7_5_out(id_ex_funct7_5),
 
         .reg_write_out(id_ex_reg_write),
         .mem_read_out(id_ex_mem_read),
@@ -175,8 +186,8 @@ module pipelined_cpu (
 
     alu_control alu_control_inst (
         .alu_op(id_ex_alu_op),
-        .funct3(id_ex_imm[14:12]),
-        .funct7_5(id_ex_imm[30]),
+        .funct3(id_ex_funct3),
+        .funct7_5(id_ex_funct7_5),
         .alu_sel(alu_sel)
     );
 
@@ -222,5 +233,55 @@ module pipelined_cpu (
         .mem_write_out(ex_mem_mem_write),
         .mem_to_reg_out(ex_mem_mem_to_reg)
     );
+
+    // =========================
+    // MEM Stage
+    // =========================
+    logic [31:0] mem_read_data;
+
+    data_memory data_memory_inst (
+        .clk(clk),
+        .mem_write(ex_mem_mem_write),
+        .mem_read(ex_mem_mem_read),
+        .address(ex_mem_alu_result),
+        .write_data(ex_mem_rs2_data),
+        .read_data(mem_read_data)
+    );
+
+    // =========================
+    // MEM/WB Register
+    // =========================
+    logic [31:0] mem_wb_alu_result;
+    logic [31:0] mem_wb_mem_data;
+    logic [4:0] mem_wb_rd;
+
+    logic mem_wb_reg_write;
+    logic mem_wb_mem_to_reg;
+
+    mem_wb_reg mem_wb_inst (
+        .clk(clk),
+        .reset(reset),
+
+        .alu_result_in(ex_mem_alu_result),
+        .mem_data_in(mem_read_data),
+        .rd_in(ex_mem_rd),
+
+        .reg_write_in(ex_mem_reg_write),
+        .mem_to_reg_in(ex_mem_mem_to_reg),
+
+        .alu_result_out(mem_wb_alu_result),
+        .mem_data_out(mem_wb_mem_data),
+        .rd_out(mem_wb_rd),
+
+        .reg_write_out(mem_wb_reg_write),
+        .mem_to_reg_out(mem_wb_mem_to_reg)
+    );
+
+    // =========================
+    // WB Stage
+    // =========================
+    assign wb_data = mem_wb_mem_to_reg ? mem_wb_mem_data : mem_wb_alu_result;
+    assign wb_rd = mem_wb_rd;
+    assign wb_reg_write = mem_wb_reg_write;
 
 endmodule

@@ -11,6 +11,9 @@ module id_ex_reg (
     input logic [4:0] rs2_in,
     input logic [4:0] rd_in,
 
+    input logic [2:0] funct3_in,
+    input logic funct7_5_in,
+
     input logic reg_write_in,
     input logic mem_read_in,
     input logic mem_write_in,
@@ -27,6 +30,9 @@ module id_ex_reg (
     output logic [4:0] rs1_out,
     output logic [4:0] rs2_out,
     output logic [4:0] rd_out,
+
+    output logic [2:0] funct3_out,
+    output logic funct7_5_out,
 
     output logic reg_write_out,
     output logic mem_read_out,
@@ -48,6 +54,9 @@ always_ff @(posedge clk or posedge reset) begin
         rs2_out <= 0;
         rd_out <= 0;
 
+        funct3_out <= 0;
+        funct7_5_out <= 0;
+
         reg_write_out <= 0;
         mem_read_out <= 0;
         mem_write_out <= 0;
@@ -65,6 +74,9 @@ always_ff @(posedge clk or posedge reset) begin
         rs1_out <= rs1_in;
         rs2_out <= rs2_in;
         rd_out <= rd_in;
+
+        funct3_out <= funct3_in;
+        funct7_5_out <= funct7_5_in;
 
         reg_write_out <= reg_write_in;
         mem_read_out <= mem_read_in;
