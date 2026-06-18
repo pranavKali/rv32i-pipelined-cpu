@@ -1,26 +1,33 @@
-# Single Cycle RISC-V CPU
+# Single Cycle and Pipelined RISC-V CPU
 
-A modular single-cycle RISC-V CPU implemented in SystemVerilog and verified using ModelSim.
+A modular RISC-V CPU implemented in SystemVerilog and verified using ModelSim. The project began as a single-cycle processor and is currently being extended into a 5-stage pipelined processor.
 
 ## Current Progress
 
-- [x] ALU
-- [x] Register File
-- [x] Immediate Generator
-- [x] Control Unit
-- [x] ALU Control
-- [x] Program Counter
-- [x] Instruction Memory
-- [x] Data Memory
-- [x] Datapath Integration
-- [x] CPU Top-Level Integration
-- [x] End-to-End Program Execution Test
-- [ ] Pipelined CPU
-- [ ] FPGA Implementation
+* [x] ALU
+* [x] Register File
+* [x] Immediate Generator
+* [x] Control Unit
+* [x] ALU Control
+* [x] Program Counter
+* [x] Instruction Memory
+* [x] Data Memory
+* [x] Datapath Integration
+* [x] CPU Top-Level Integration
+* [x] End-to-End Program Execution Test
+* [x] IF/ID Pipeline Register
+* [x] ID/EX Pipeline Register
+* [x] EX/MEM Pipeline Register
+* [x] MEM/WB Pipeline Register
+* [ ] Pipelined CPU Integration
+* [ ] Forwarding Unit
+* [ ] Hazard Detection Unit
+* [ ] Branch Handling
+* [ ] FPGA Implementation
 
 ---
 
-# Project Architecture
+# Single-Cycle Architecture
 
 ```text
 Program Counter
@@ -42,29 +49,63 @@ Writeback
 
 ---
 
+# Pipelined Architecture (In Progress)
+
+```text
+IF → ID → EX → MEM → WB
+```
+
+Current pipeline structure:
+
+```text
+Program Counter
+      ↓
+Instruction Memory
+      ↓
+IF/ID Register
+      ↓
+Instruction Decode
+      ↓
+ID/EX Register
+      ↓
+Execute
+      ↓
+EX/MEM Register
+      ↓
+Memory Access
+      ↓
+MEM/WB Register
+      ↓
+Writeback
+```
+
+---
+
 # ALU
 
 ## Features
 
-- ADD
-- SUB
-- AND
-- OR
-- XOR
-- Shift Left Logical (SLL)
-- Shift Right Logical (SRL)
+* ADD
+* SUB
+* AND
+* OR
+* XOR
+* Shift Left Logical (SLL)
+* Shift Right Logical (SRL)
 
 ## Files
 
-- `src/alu.sv`
-- `tb/alu_tb.sv`
+* `src/alu.sv`
+* `tb/alu_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![ALU Transcript](docs/alu_pass_transcript.png)
 
 ### Waveform
+
 ![ALU Waveform](docs/alu_waveform.png)
 
 ---
@@ -73,22 +114,24 @@ Writeback
 
 ## Features
 
-- 32 general-purpose registers
-- Dual read ports
-- Single write port
-- Register x0 hardwired to zero
+* 32 general-purpose registers
+* Dual read ports
+* Single write port
+* Register x0 hardwired to zero
 
 ## Files
 
-- `src/reg_file.sv`
-- `tb/reg_file_tb.sv`
+* `src/reg_file.sv`
+* `tb/reg_file_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![Register File Transcript](docs/reg_file_pass_transcript.png)
 
 ### Waveform
+
 ![Register File Waveform](docs/reg_file_waveform.png)
 
 ---
@@ -97,23 +140,25 @@ Writeback
 
 ## Features
 
-- I-type immediate extraction
-- Load immediate extraction
-- Store immediate extraction
-- Branch immediate extraction
-- Sign extension to 32 bits
+* I-type immediate extraction
+* Load immediate extraction
+* Store immediate extraction
+* Branch immediate extraction
+* Sign extension to 32 bits
 
 ## Files
 
-- `src/imm_gen.sv`
-- `tb/imm_gen_tb.sv`
+* `src/imm_gen.sv`
+* `tb/imm_gen_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![Immediate Generator Transcript](docs/imm_gen_pass_transcript.png)
 
 ### Waveform
+
 ![Immediate Generator Waveform](docs/imm_gen_waveform.png)
 
 ---
@@ -122,24 +167,26 @@ Writeback
 
 ## Features
 
-- R-type instruction decoding
-- I-type instruction decoding
-- Load instruction decoding
-- Store instruction decoding
-- Branch instruction decoding
-- Generates datapath control signals
+* R-type instruction decoding
+* I-type instruction decoding
+* Load instruction decoding
+* Store instruction decoding
+* Branch instruction decoding
+* Generates datapath control signals
 
 ## Files
 
-- `src/control_unit.sv`
-- `tb/control_unit_tb.sv`
+* `src/control_unit.sv`
+* `tb/control_unit_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![Control Unit Transcript](docs/control_unit_pass_transcript.png)
 
 ### Waveform
+
 ![Control Unit Waveform](docs/control_unit_waveform.png)
 
 ---
@@ -148,37 +195,41 @@ Writeback
 
 ## Features
 
-- Decodes ALU operations using:
-  - `alu_op`
-  - `funct3`
-  - `funct7`
+* Decodes ALU operations using:
 
-- Supports:
-  - ADD
-  - SUB
-  - AND
-  - OR
-  - XOR
-  - SLL
-  - SRL
-  - ADDI
-  - ANDI
-  - ORI
-  - XORI
-  - SLLI
-  - SRLI
+  * `alu_op`
+  * `funct3`
+  * `funct7`
+
+* Supports:
+
+  * ADD
+  * SUB
+  * AND
+  * OR
+  * XOR
+  * SLL
+  * SRL
+  * ADDI
+  * ANDI
+  * ORI
+  * XORI
+  * SLLI
+  * SRLI
 
 ## Files
 
-- `src/alu_control.sv`
-- `tb/alu_control_tb.sv`
+* `src/alu_control.sv`
+* `tb/alu_control_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![ALU Control Transcript](docs/alu_control_pass_transcript.png)
 
 ### Waveform
+
 ![ALU Control Waveform](docs/alu_control_waveform.png)
 
 ---
@@ -187,21 +238,23 @@ Writeback
 
 ## Features
 
-- 32-bit program counter
-- Positive-edge clock update
-- Asynchronous reset
+* 32-bit program counter
+* Positive-edge clock update
+* Asynchronous reset
 
 ## Files
 
-- `src/program_counter.sv`
-- `tb/program_counter_tb.sv`
+* `src/program_counter.sv`
+* `tb/program_counter_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![Program Counter Transcript](docs/program_counter_pass_transcript.png)
 
 ### Waveform
+
 ![Program Counter Waveform](docs/program_counter_waveform.png)
 
 ---
@@ -210,22 +263,24 @@ Writeback
 
 ## Features
 
-- 256-word memory
-- Stores RISC-V instructions
-- Word-aligned addressing
-- Supports instruction fetch
+* 256-word memory
+* Stores RISC-V instructions
+* Word-aligned addressing
+* Supports instruction fetch
 
 ## Files
 
-- `src/instruction_memory.sv`
-- `tb/instruction_memory_tb.sv`
+* `src/instruction_memory.sv`
+* `tb/instruction_memory_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![Instruction Memory Transcript](docs/instruction_memory_pass_transcript.png)
 
 ### Waveform
+
 ![Instruction Memory Waveform](docs/instruction_memory_waveform.png)
 
 ---
@@ -234,22 +289,24 @@ Writeback
 
 ## Features
 
-- 256-word memory
-- Synchronous write
-- Combinational read
-- Word-aligned addressing
+* 256-word memory
+* Synchronous write
+* Combinational read
+* Word-aligned addressing
 
 ## Files
 
-- `src/data_memory.sv`
-- `tb/data_memory_tb.sv`
+* `src/data_memory.sv`
+* `tb/data_memory_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![Data Memory Transcript](docs/data_memory_pass_transcript.png)
 
 ### Waveform
+
 ![Data Memory Waveform](docs/data_memory_waveform.png)
 
 ---
@@ -258,32 +315,119 @@ Writeback
 
 ## Features
 
-- Connects Control Unit, ALU Control, and Datapath
-- Executes instruction fetch sequence
-- Supports instruction decode
-- Supports ALU execution
-- Supports memory access
-- Supports writeback
+* Connects Control Unit, ALU Control, and Datapath
+* Executes instruction fetch sequence
+* Supports instruction decode
+* Supports ALU execution
+* Supports memory access
+* Supports writeback
 
 ## Files
 
-- `src/cpu_top.sv`
-- `tb/cpu_top_tb.sv`
+* `src/cpu_top.sv`
+* `tb/cpu_top_tb.sv`
 
 ## Simulation Results
 
 ### Transcript
+
 ![CPU Transcript](docs/cpu_top_pass_transcript.png)
 
 ### Waveform
+
 ![CPU Waveform](docs/cpu_top_waveform.png)
+
+---
+
+# Pipeline Registers
+
+## IF/ID Register
+
+### Files
+
+* `src/pipeline_regs/if_id_reg.sv`
+* `tb/if_id_reg_tb.sv`
+
+### Transcript
+
+![IF/ID Transcript](docs/if_id_reg_pass_transcript.png)
+
+### Waveform
+
+![IF/ID Waveform](docs/if_id_reg_waveform.png)
+
+---
+
+## ID/EX Register
+
+### Files
+
+* `src/pipeline_regs/id_ex_reg.sv`
+* `tb/id_ex_reg_tb.sv`
+
+### Transcript
+
+![ID/EX Transcript](docs/id_ex_reg_pass_transcript.png)
+
+### Waveform
+
+![ID/EX Waveform](docs/id_ex_reg_waveform.png)
+
+---
+
+## EX/MEM Register
+
+### Files
+
+* `src/pipeline_regs/ex_mem_reg.sv`
+* `tb/ex_mem_reg_tb.sv`
+
+### Transcript
+
+![EX/MEM Transcript](docs/ex_mem_reg_pass_transcript.png)
+
+### Waveform
+
+![EX/MEM Waveform](docs/ex_mem_reg_waveform.png)
+
+---
+
+## MEM/WB Register
+
+### Files
+
+* `src/pipeline_regs/mem_wb_reg.sv`
+* `tb/mem_wb_reg_tb.sv`
+
+### Transcript
+
+![MEM/WB Transcript](docs/mem_wb_reg_pass_transcript.png)
+
+### Waveform
+
+![MEM/WB Waveform](docs/mem_wb_reg_waveform.png)
+
+---
+
+# Upcoming Work
+
+* Integrate pipeline registers into a complete pipelined CPU
+* Implement instruction fetch stage
+* Implement instruction decode stage
+* Implement execute stage
+* Implement memory stage
+* Implement writeback stage
+* Add forwarding unit
+* Add hazard detection unit
+* Add branch handling
+* Validate on FPGA
 
 ---
 
 ## Tools Used
 
-- SystemVerilog
-- ModelSim Intel FPGA Edition
-- Git
-- GitHub
-- VS Code
+* SystemVerilog
+* ModelSim Intel FPGA Edition
+* Git
+* GitHub
+* VS Code
