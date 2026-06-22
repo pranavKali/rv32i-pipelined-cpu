@@ -1,9 +1,12 @@
 # Single Cycle and Pipelined RISC-V CPU
 
-A modular RISC-V CPU implemented in SystemVerilog and verified using ModelSim. The project began as a single-cycle processor and is currently being extended into a 5-stage pipelined processor.
+A modular RISC-V CPU implemented in SystemVerilog and verified using ModelSim. The project began as a single-cycle processor and has been extended into a fully functional 5-stage pipelined processor with forwarding, hazard detection, and branch handling.
+
+---
 
 ## Current Progress
 
+### Single-Cycle CPU
 * [x] ALU
 * [x] Register File
 * [x] Immediate Generator
@@ -15,14 +18,20 @@ A modular RISC-V CPU implemented in SystemVerilog and verified using ModelSim. T
 * [x] Datapath Integration
 * [x] CPU Top-Level Integration
 * [x] End-to-End Program Execution Test
+
+### Pipelined CPU
 * [x] IF/ID Pipeline Register
 * [x] ID/EX Pipeline Register
 * [x] EX/MEM Pipeline Register
 * [x] MEM/WB Pipeline Register
-* [ ] Pipelined CPU Integration
-* [ ] Forwarding Unit
-* [ ] Hazard Detection Unit
-* [ ] Branch Handling
+* [x] 5-Stage Pipeline Integration
+* [x] Forwarding Unit
+* [x] Forwarding Integration
+* [x] Hazard Detection Unit
+* [x] Load-Use Hazard Handling
+* [x] Branch Unit
+* [x] Branch Flush Logic
+* [x] Branch CPU Verification
 * [ ] FPGA Implementation
 
 ---
@@ -49,13 +58,13 @@ Writeback
 
 ---
 
-# Pipelined Architecture (In Progress)
+# Pipelined Architecture
 
 ```text
 IF → ID → EX → MEM → WB
 ```
 
-Current pipeline structure:
+Pipeline structure:
 
 ```text
 Program Counter
@@ -68,7 +77,7 @@ Instruction Decode
       ↓
 ID/EX Register
       ↓
-Execute
+Execute (ALU + Forwarding)
       ↓
 EX/MEM Register
       ↓
@@ -196,13 +205,11 @@ Writeback
 ## Features
 
 * Decodes ALU operations using:
-
   * `alu_op`
   * `funct3`
   * `funct7`
 
 * Supports:
-
   * ADD
   * SUB
   * AND
@@ -409,25 +416,39 @@ Writeback
 
 ---
 
-# Upcoming Work
+# Advanced Pipeline Features
 
-* Integrate pipeline registers into a complete pipelined CPU
-* Implement instruction fetch stage
-* Implement instruction decode stage
-* Implement execute stage
-* Implement memory stage
-* Implement writeback stage
-* Add forwarding unit
-* Add hazard detection unit
-* Add branch handling
-* Validate on FPGA
+## Forwarding Unit
+
+The forwarding unit resolves RAW (Read After Write) data hazards by forwarding results from the EX/MEM and MEM/WB pipeline stages directly to the ALU inputs, eliminating stalls for back-to-back register-dependent instructions.
+
+### Forwarding Logic
+
+| `forward_a` / `forward_b` | Source |
+|---|---|
+| `2'b00` | Register file (no forwarding) |
+| `2'b10` | EX/MEM stage result |
+| `2'b01` | MEM/WB stage result |
+
+### Files
+
+* `src/forwarding_unit.sv`
+* `tb/forwarding_unit_tb.sv`
+
+### Simulation Results
+
+#### Transcript
+
+![Forwarding Unit Transcript](docs/forwarding_unit_pass_transcript.png)
+
+#### Waveform
+
+![Forwarding Unit Waveform](docs/forwarding_unit_waveform.png)
 
 ---
 
-## Tools Used
+## Load-Use Hazard Detection
 
-* SystemVerilog
-* ModelSim Intel FPGA Edition
-* Git
-* GitHub
-* VS Code
+The hazard detection unit identifies load-use hazards where a `lw` instruction is immediately followed by an instruction that reads the loaded register. When detected, the pipeline is stalled for one cycle by freezing the PC and IF/ID register, and inserting a bubble into the ID/EX register.
+
+### Hazard Condition
