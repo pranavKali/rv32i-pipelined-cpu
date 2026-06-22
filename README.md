@@ -452,3 +452,223 @@ The forwarding unit resolves RAW (Read After Write) data hazards by forwarding r
 The hazard detection unit identifies load-use hazards where a `lw` instruction is immediately followed by an instruction that reads the loaded register. When detected, the pipeline is stalled for one cycle by freezing the PC and IF/ID register, and inserting a bubble into the ID/EX register.
 
 ### Hazard Condition
+```text
+lw x1, 0(x0)
+add x2, x1, x3
+```
+
+Without hazard detection, the ADD instruction would read stale data before the load completed.
+
+### Files
+
+* `src/hazard_detection_unit.sv`
+* `tb/hazard_cpu_tb.sv`
+
+### Simulation Results
+
+#### Hazard Detection Unit Transcript
+
+![Hazard Detection Transcript](docs/hazard_detection_pass_transcript.png)
+
+#### Hazard Detection Unit Waveform
+
+![Hazard Detection Waveform](docs/hazard_detection_waveform.png)
+
+#### Load-Use Hazard CPU Transcript
+
+![Hazard CPU Transcript](docs/hazard_cpu_pass_transcript.png)
+
+#### Load-Use Hazard CPU Waveform
+
+![Hazard CPU Waveform](docs/hazard_cpu_waveform.png)
+
+---
+
+## Branch Handling
+
+The branch unit supports conditional branch execution and pipeline flushing for taken branches.
+
+When a branch is taken:
+
+1. The branch target address is calculated in the EX stage.
+2. The program counter is redirected.
+3. Incorrect instructions already fetched are flushed from the pipeline.
+4. Execution resumes at the correct branch target.
+
+### Files
+
+* `src/branch_unit.sv`
+* `tb/branch_unit_tb.sv`
+* `tb/branch_cpu_tb.sv`
+
+### Simulation Results
+
+#### Branch Unit Transcript
+
+![Branch Unit Transcript](docs/branch_unit_pass_transcript.png)
+
+#### Branch Unit Waveform
+
+![Branch Unit Waveform](docs/branch_unit_waveform.png)
+
+#### Branch CPU Transcript
+
+![Branch CPU Transcript](docs/branch_cpu_pass_transcript.png)
+
+#### Branch CPU Waveform
+
+![Branch CPU Waveform](docs/branch_cpu_waveform.png)
+
+---
+
+# Full CPU Verification Suite
+
+After implementing forwarding, hazard detection, and branch handling, a complete CPU-level verification suite was created to validate end-to-end processor functionality.
+
+---
+
+## Final ALU Verification
+
+Verifies correct execution of:
+
+* ADD
+* SUB
+* AND
+* OR
+* XOR
+
+### Files
+
+* `tb/final_alu_cpu_tb.sv`
+
+### Simulation Results
+
+#### Transcript
+
+![Final ALU CPU Transcript](docs/final_alu_cpu_pass_transcript.png)
+
+#### Waveform
+
+![Final ALU CPU Waveform](docs/final_alu_cpu_waveform.png)
+
+---
+
+## Final Memory Verification
+
+Verifies:
+
+* Store operations
+* Load operations
+* Memory writeback path
+* Register writeback path
+
+### Files
+
+* `tb/final_memory_cpu_tb.sv`
+
+### Simulation Results
+
+#### Transcript
+
+![Final Memory CPU Transcript](docs/final_memory_cpu_pass_transcript.png)
+
+#### Waveform
+
+![Final Memory CPU Waveform](docs/final_memory_cpu_waveform.png)
+
+---
+
+## Final Forwarding Verification
+
+Stress-test of chained data dependencies across multiple pipeline stages.
+
+### Files
+
+* `tb/final_forwarding_cpu_tb.sv`
+
+### Simulation Results
+
+#### Transcript
+
+![Final Forwarding CPU Transcript](docs/final_forwarding_cpu_pass_transcript.png)
+
+#### Waveform
+
+![Final Forwarding CPU Waveform](docs/final_forwarding_cpu_waveform.png)
+
+---
+
+## Final Branch Not-Taken Verification
+
+Verifies correct execution when branch conditions evaluate false and pipeline flushing is not triggered.
+
+### Files
+
+* `tb/final_branch_not_taken_cpu_tb.sv`
+
+### Simulation Results
+
+#### Transcript
+
+![Final Branch Not Taken Transcript](docs/final_branch_not_taken_cpu_pass_transcript.png)
+
+#### Waveform
+
+![Final Branch Not Taken Waveform](docs/final_branch_not_taken_cpu_waveform.png)
+
+---
+
+# Verification Summary
+
+The processor has been verified at:
+
+### Module Level
+
+* ALU
+* Register File
+* Immediate Generator
+* Control Unit
+* ALU Control
+* Program Counter
+* Instruction Memory
+* Data Memory
+* Pipeline Registers
+* Forwarding Unit
+* Hazard Detection Unit
+* Branch Unit
+
+### CPU Level
+
+* Single-Cycle CPU Execution
+* Pipeline Integration
+* Forwarding Verification
+* Load-Use Hazard Verification
+* Branch Taken Verification
+* Branch Not Taken Verification
+* ALU Verification
+* Memory Verification
+
+---
+
+# Future Work
+
+## FPGA Implementation
+
+Planned next steps:
+
+* Synthesize processor in Vivado
+* Deploy on Basys 3 FPGA
+* Create FPGA constraints file
+* Connect clock and reset inputs
+* Load instruction memory on hardware
+* Verify execution using FPGA resources
+
+Current project status:
+
+* Architecture: Complete
+* Pipeline Features: Complete
+* Verification: Complete
+* FPGA Implementation: In Progress
+
+```
+```
