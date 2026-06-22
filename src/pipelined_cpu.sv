@@ -188,7 +188,6 @@ module pipelined_cpu (
 
     // =========================
     // EX/MEM wire declarations
-    // (declared here so forwarding_unit and EX muxes can reference them)
     // =========================
     logic [31:0] ex_mem_alu_result;
     logic [31:0] ex_mem_rs2_data;
@@ -200,7 +199,6 @@ module pipelined_cpu (
 
     // =========================
     // MEM/WB wire declarations
-    // (declared here so forwarding_unit can reference them)
     // =========================
     logic [31:0] mem_wb_alu_result;
     logic [31:0] mem_wb_mem_data;
@@ -231,37 +229,35 @@ module pipelined_cpu (
     logic [31:0] alu_result;
     logic        alu_zero;
 
-    // Branch target computed from EX stage PC and immediate
     assign branch_target = id_ex_pc + id_ex_imm;
 
     forwarding_unit forwarding_unit_inst (
         .id_ex_rs1(id_ex_rs1),
         .id_ex_rs2(id_ex_rs2),
-
         .ex_mem_rd(ex_mem_rd),
         .ex_mem_reg_write(ex_mem_reg_write),
-
         .mem_wb_rd(mem_wb_rd),
         .mem_wb_reg_write(mem_wb_reg_write),
-
         .forward_a(forward_a),
         .forward_b(forward_b)
     );
 
     always_comb begin
-        case (forward_a)
-            2'b00:   alu_operand_a = id_ex_rs1_data;
-            2'b10:   alu_operand_a = ex_mem_alu_result;
-            2'b01:   alu_operand_a = wb_data;
-            default: alu_operand_a = id_ex_rs1_data;
-        endcase
+        // Operand A
+        if (ex_mem_reg_write && ex_mem_rd != 5'd0 && ex_mem_rd == id_ex_rs1)
+            alu_operand_a = ex_mem_alu_result;
+        else if (mem_wb_reg_write && mem_wb_rd != 5'd0 && mem_wb_rd == id_ex_rs1)
+            alu_operand_a = wb_data;
+        else
+            alu_operand_a = id_ex_rs1_data;
 
-        case (forward_b)
-            2'b00:   forwarded_rs2_data = id_ex_rs2_data;
-            2'b10:   forwarded_rs2_data = ex_mem_alu_result;
-            2'b01:   forwarded_rs2_data = wb_data;
-            default: forwarded_rs2_data = id_ex_rs2_data;
-        endcase
+        // Operand B
+        if (ex_mem_reg_write && ex_mem_rd != 5'd0 && ex_mem_rd == id_ex_rs2)
+            forwarded_rs2_data = ex_mem_alu_result;
+        else if (mem_wb_reg_write && mem_wb_rd != 5'd0 && mem_wb_rd == id_ex_rs2)
+            forwarded_rs2_data = wb_data;
+        else
+            forwarded_rs2_data = id_ex_rs2_data;
 
         if (id_ex_alu_src)
             alu_operand_b = id_ex_imm;
@@ -295,7 +291,6 @@ module pipelined_cpu (
 
     // =========================
     // EX/MEM Register
-    // (wires already declared above; only instantiation here)
     // =========================
     ex_mem_reg ex_mem_inst (
         .clk(clk),
@@ -336,7 +331,6 @@ module pipelined_cpu (
 
     // =========================
     // MEM/WB Register
-    // (wires already declared above; only instantiation here)
     // =========================
     mem_wb_reg mem_wb_inst (
         .clk(clk),

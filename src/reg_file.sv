@@ -27,7 +27,7 @@ module reg_file (
         end
     end
 
-    assign rd1 = (rs1 == 5'd0) ? 32'b0 : regs[rs1];
-    assign rd2 = (rs2 == 5'd0) ? 32'b0 : regs[rs2];
+    assign rd1 = (rs1 == 5'd0) ? 32'b0 : (reg_write && rd == rs1 && rd != 5'd0) ? wd : regs[rs1];
+    assign rd2 = (rs2 == 5'd0) ? 32'b0 : (reg_write && rd == rs2 && rd != 5'd0) ? wd : regs[rs2];
 
 endmodule
