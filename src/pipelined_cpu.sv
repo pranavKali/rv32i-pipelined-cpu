@@ -11,8 +11,17 @@ module pipelined_cpu (
     logic [31:0] instruction;
 
     logic stall;
+    logic branch_taken;
+    logic [31:0] branch_target;
 
-    assign pc_next = stall ? pc_current : pc_current + 32'd4;
+    always_comb begin
+        if (stall)
+            pc_next = pc_current;
+        else if (branch_taken)
+            pc_next = branch_target;
+        else
+            pc_next = pc_current + 32'd4;
+    end
 
     program_counter pc_inst (
         .clk(clk),
@@ -36,6 +45,7 @@ module pipelined_cpu (
         .clk(clk),
         .reset(reset),
         .stall(stall),
+        .flush(branch_taken),
         .pc_in(pc_current),
         .instruction_in(instruction),
         .pc_out(if_id_pc),
@@ -133,7 +143,7 @@ module pipelined_cpu (
     id_ex_reg id_ex_inst (
         .clk(clk),
         .reset(reset),
-        .bubble(stall),
+        .bubble(stall || branch_taken),
 
         .pc_in(if_id_pc),
         .rs1_data_in(rs1_data),
@@ -221,6 +231,9 @@ module pipelined_cpu (
     logic [31:0] alu_result;
     logic        alu_zero;
 
+    // Branch target computed from EX stage PC and immediate
+    assign branch_target = id_ex_pc + id_ex_imm;
+
     forwarding_unit forwarding_unit_inst (
         .id_ex_rs1(id_ex_rs1),
         .id_ex_rs2(id_ex_rs2),
@@ -269,6 +282,15 @@ module pipelined_cpu (
         .alu_sel(alu_sel),
         .result(alu_result),
         .zero(alu_zero)
+    );
+
+    // =========================
+    // Branch Unit
+    // =========================
+    branch_unit branch_unit_inst (
+        .branch(id_ex_branch),
+        .zero(alu_zero),
+        .branch_taken(branch_taken)
     );
 
     // =========================
