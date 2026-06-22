@@ -10,9 +10,7 @@ module pipelined_cpu (
     logic [31:0] pc_next;
     logic [31:0] instruction;
 
-    logic stall;
-
-    assign pc_next = stall ? pc_current : pc_current + 32'd4;
+    assign pc_next = pc_current + 32'd4;
 
     program_counter pc_inst (
         .clk(clk),
@@ -35,7 +33,6 @@ module pipelined_cpu (
     if_id_reg if_id_inst (
         .clk(clk),
         .reset(reset),
-        .stall(stall),
         .pc_in(pc_current),
         .instruction_in(instruction),
         .pc_out(if_id_pc),
@@ -50,19 +47,19 @@ module pipelined_cpu (
     logic [4:0] rs2;
     logic [4:0] rd;
     logic [2:0] funct3;
-    logic       funct7_5;
+    logic funct7_5;
 
     logic [31:0] rs1_data;
     logic [31:0] rs2_data;
     logic [31:0] imm;
 
-    logic        reg_write;
-    logic        mem_read;
-    logic        mem_write;
-    logic        mem_to_reg;
-    logic        alu_src;
-    logic        branch;
-    logic [1:0]  alu_op;
+    logic reg_write;
+    logic mem_read;
+    logic mem_write;
+    logic mem_to_reg;
+    logic alu_src;
+    logic branch;
+    logic [1:0] alu_op;
 
     assign opcode   = if_id_instruction[6:0];
     assign rd       = if_id_instruction[11:7];
@@ -133,7 +130,6 @@ module pipelined_cpu (
     id_ex_reg id_ex_inst (
         .clk(clk),
         .reset(reset),
-        .bubble(stall),
 
         .pc_in(if_id_pc),
         .rs1_data_in(rs1_data),
@@ -197,17 +193,6 @@ module pipelined_cpu (
     logic [4:0]  mem_wb_rd;
     logic        mem_wb_reg_write;
     logic        mem_wb_mem_to_reg;
-
-    // =========================
-    // Hazard Detection Unit
-    // =========================
-    hazard_detection_unit hazard_unit_inst (
-        .id_ex_mem_read(id_ex_mem_read),
-        .id_ex_rd(id_ex_rd),
-        .if_id_rs1(rs1),
-        .if_id_rs2(rs2),
-        .stall(stall)
-    );
 
     // =========================
     // EX Stage

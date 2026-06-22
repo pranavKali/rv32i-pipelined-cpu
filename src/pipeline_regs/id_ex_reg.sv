@@ -1,6 +1,7 @@
 module id_ex_reg (
     input logic clk,
     input logic reset,
+    input logic bubble,
 
     input logic [31:0] pc_in,
     input logic [31:0] rs1_data_in,
@@ -45,6 +46,27 @@ module id_ex_reg (
 
 always_ff @(posedge clk or posedge reset) begin
     if (reset) begin
+        pc_out <= 0;
+        rs1_data_out <= 0;
+        rs2_data_out <= 0;
+        imm_out <= 0;
+
+        rs1_out <= 0;
+        rs2_out <= 0;
+        rd_out <= 0;
+
+        funct3_out <= 0;
+        funct7_5_out <= 0;
+
+        reg_write_out <= 0;
+        mem_read_out <= 0;
+        mem_write_out <= 0;
+        mem_to_reg_out <= 0;
+        alu_src_out <= 0;
+        branch_out <= 0;
+        alu_op_out <= 0;
+    end
+    else if (bubble) begin
         pc_out <= 0;
         rs1_data_out <= 0;
         rs2_data_out <= 0;

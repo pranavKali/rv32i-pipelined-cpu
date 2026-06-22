@@ -1,6 +1,7 @@
 module if_id_reg (
     input logic clk,
     input logic reset,
+    input logic stall,
 
     input logic [31:0] pc_in,
     input logic [31:0] instruction_in,
@@ -13,6 +14,10 @@ always_ff @(posedge clk or posedge reset) begin
     if (reset) begin
         pc_out <= 32'b0;
         instruction_out <= 32'b0;
+    end
+    else if (stall) begin
+        pc_out <= pc_out;
+        instruction_out <= instruction_out;
     end
     else begin
         pc_out <= pc_in;
